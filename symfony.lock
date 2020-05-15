@@ -99,6 +99,15 @@
     "php": {
         "version": "7.4"
     },
+    "phpdocumentor/reflection-common": {
+        "version": "2.1.0"
+    },
+    "phpdocumentor/reflection-docblock": {
+        "version": "5.1.0"
+    },
+    "phpdocumentor/type-resolver": {
+        "version": "1.1.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -195,6 +204,9 @@
     "symfony/http-kernel": {
         "version": "v5.0.8"
     },
+    "symfony/inflector": {
+        "version": "v5.0.8"
+    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -225,6 +237,12 @@
     "symfony/profiler-pack": {
         "version": "v1.0.4"
     },
+    "symfony/property-access": {
+        "version": "v5.0.8"
+    },
+    "symfony/property-info": {
+        "version": "v5.0.8"
+    },
     "symfony/routing": {
         "version": "4.2",
         "recipe": {
@@ -238,6 +256,12 @@
             "./config/packages/routing.yaml",
             "./config/routes.yaml"
         ]
+    },
+    "symfony/serializer": {
+        "version": "v5.0.8"
+    },
+    "symfony/serializer-pack": {
+        "version": "v1.0.3"
     },
     "symfony/service-contracts": {
         "version": "v2.0.1"
@@ -302,5 +326,8 @@
     },
     "webimpress/safe-writer": {
         "version": "2.0.1"
+    },
+    "webmozart/assert": {
+        "version": "1.8.0"
     }
 }
