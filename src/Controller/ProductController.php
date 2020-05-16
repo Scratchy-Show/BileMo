@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
 use App\Repository\ProductRepository;
 use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,7 +47,21 @@ class ProductController extends AbstractController
 
 
         // Récupère tous les produits de la table product avec une pagination
-        $product = $productRepository->findAllProducts($page, $limit);
+        $products = $productRepository->findAllProducts($page, $limit);
+
+        // Sérialisation de $products avec un status 200
+        return $this->json($products, 200, []);
+    }
+
+    /**
+     * @Route("/product/{id}", name="show_product", methods={"GET"}, requirements={"id":"\d+"})
+     * @param Product $product
+     * @param ProductRepository $productRepository
+     * @return JsonResponse
+     */
+    public function showProduct(Product $product, ProductRepository $productRepository)
+    {
+        $product = $productRepository->find($product->getId());
 
         // Sérialisation de $product avec un status 200
         return $this->json($product, 200, []);
