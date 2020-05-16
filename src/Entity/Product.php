@@ -85,7 +85,7 @@ class Product
     {
         $this->memory = $memory;
 
-        return  $this;
+        return $this;
     }
 
     public function getColor(): ?string
