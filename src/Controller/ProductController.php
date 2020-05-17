@@ -4,11 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
-use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
@@ -21,33 +19,16 @@ class ProductController extends AbstractController
      */
     public function listProducts(Request $request, ProductRepository $productRepository)
     {
-        $limit = $_ENV['LIMIT_PRODUCTS'];
-
         // Récupère le numéro de page
         $page = $request->query->get('page');
 
-        // Vérifie que $page correspond à un nombre
-        if (!is_numeric($page)) {
-            throw new InvalidArgumentException(
-                'La valeur de l\'argument est incorrecte (valeur : ' . $page . ').'
-            );
+        // Si aucune page d'indiqué - Page 1 par défaut
+        if (is_null($page)) {
+            $page = 1;
         }
-
-        // Si $page est inférieur à 1
-        if ($page < 1) {
-            throw new NotFoundHttpException('La page demandée n\'existe pas');
-        }
-
-        // Vérifie que $limit correspond à un nombre
-        if (!is_numeric($limit)) {
-            throw new InvalidArgumentException(
-                'La valeur de l\'argument est incorrecte (valeur : ' . $limit . ').'
-            );
-        }
-
 
         // Récupère tous les produits de la table product avec une pagination
-        $products = $productRepository->findAllProducts($page, $limit);
+        $products = $productRepository->findAllProducts($page, $_ENV['LIMIT_PRODUCTS']);
 
         // Sérialisation de $products avec un status 200
         return $this->json($products, 200, []);

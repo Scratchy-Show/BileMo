@@ -6,6 +6,7 @@ use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -24,6 +25,18 @@ class ProductRepository extends ServiceEntityRepository
     // Récupère tous les produits avec une pagination
     public function findAllProducts($page, $limit)
     {
+        // Vérifie que $page correspond à un nombre
+        if (!is_numeric($page)) {
+            throw new InvalidArgumentException(
+                'La valeur de l\'argument est incorrecte (valeur : ' . $page . ').'
+            );
+        }
+
+        // Si $page est inférieur à 1
+        if ($page < 1) {
+            throw new NotFoundHttpException('');
+        }
+
         // Construction de la requête
         $qb = $this->createQueryBuilder('p')
             // Sélectionne la table product
@@ -38,16 +51,18 @@ class ProductRepository extends ServiceEntityRepository
         $firstResult = ($page - 1) * $limit;
 
         // Retourne le premier résultat avec setFirstResult()
-        // Et retourne le maximum de résultat avec setMaxResults()
-        $query->setFirstResult($firstResult)->setMaxResults($limit);
+        $query->setFirstResult($firstResult);
 
-        // Instancie un objet Paginator qui va contenir uniquement les produits souhaités
+        // Retourne le maximum de résultat avec setMaxResults()
+        $query->setMaxResults($limit);
+
+        // Instancie un objet Paginator qui va contenir uniquement les commentaires souhaités
         $paginator = new Paginator($query);
 
-        // Si la page demandé ne correspond pas au compte
+        // Si la page demandée est supérieur au compte
         if (($paginator->count() <= $firstResult) && $page != 1) {
-            // Page 404, sauf pour la première page
-            throw new NotFoundHttpException('La page demandée n\'existe pas.');
+            // Page 404
+            throw new NotFoundHttpException();
         }
 
         return $paginator;
