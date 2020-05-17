@@ -34,6 +34,7 @@ class ProductRepository extends ServiceEntityRepository
 
         // Si $page est inférieur à 1
         if ($page < 1) {
+            // Page 404
             throw new NotFoundHttpException('');
         }
 
