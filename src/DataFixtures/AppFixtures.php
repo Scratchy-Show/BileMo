@@ -154,7 +154,7 @@ class AppFixtures extends Fixture
                 ->setUsername($customerName)
                 ->setName($customerName)
                 ->setEmail("test" . $customerName . "@exemple.fr")
-                ->setRoles(['ROLE_USER'])
+                ->setRoles(['ROLE_ADMIN'])
                 ->setPassword($this->encoder->encodePassword($customer, 'password'))
                 ;
 
