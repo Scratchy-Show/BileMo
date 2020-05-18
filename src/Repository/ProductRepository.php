@@ -34,7 +34,7 @@ class ProductRepository extends ServiceEntityRepository
 
         // Si $page est inférieur à 1
         if ($page < 1) {
-            // Page 404
+            // Redirection vers le ExceptionSubscriber
             throw new NotFoundHttpException('');
         }
 
@@ -62,7 +62,7 @@ class ProductRepository extends ServiceEntityRepository
 
         // Si la page demandée est supérieur au compte
         if (($paginator->count() <= $firstResult) && $page != 1) {
-            // Page 404
+            // Redirection vers le ExceptionSubscriber
             throw new NotFoundHttpException();
         }
 
