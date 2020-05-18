@@ -71,11 +71,9 @@ class User
      * @ORM\Column(type="string", length=20)
      * @Groups({"showUser"})
      * @Assert\NotBlank(message = "Un code postale doit être indiqué")
-     * @Assert\Length(
-     *      min = 5,
-     *      max = 5,
-     *      minMessage = "Le code postale doit contenir {{ limit }} caractères",
-     *      maxMessage = "Le code postale doit contenir {{ limit }} caractères"
+     * @Assert\Regex(
+     *     pattern = "/^\d{5}-\d{4}|\d{5}|[A-Z]\d[A-Z] \d[A-Z]\d$/",
+     *     message = "Le code postale n'est pas valide"
      * )
      */
     private $zipcode;
