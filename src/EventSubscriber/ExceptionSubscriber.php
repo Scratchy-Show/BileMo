@@ -7,6 +7,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
@@ -54,6 +55,14 @@ class ExceptionSubscriber implements EventSubscriberInterface
             $data = [
                 'status' => 500,
                 'message' => 'Erreur de syntaxe'
+            ];
+
+            // Renvoie une réponse au format JSON
+            $event->setResponse(new JsonResponse($data));
+        } elseif ($exception instanceof BadRequestHttpException) {
+            $data = [
+                'status' => $exception->getStatusCode(),
+                'message' => 'La demande n\'a pas pu être traitée correctement'
             ];
 
             // Renvoie une réponse au format JSON

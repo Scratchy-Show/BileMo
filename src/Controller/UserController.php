@@ -9,8 +9,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -99,11 +99,76 @@ class UserController extends AbstractController
     }
 
     /**
+     * @Route("/{id}", name="update_user", methods={"PUT"})
+     * @IsGranted("ROLE_ADMIN")
+     * @param Request $request
+     * @param User $user
+     * @param ValidatorInterface $validator
+     * @param EntityManagerInterface $entityManager
+     * @return JsonResponse
+     */
+    public function updateUser(
+        Request $request,
+        User $user,
+        ValidatorInterface $validator,
+        EntityManagerInterface $entityManager)
+    {
+        // Si l'utilisateur n'appartient pas au client connecté
+        if ($user->getCustomer() != $this->getUser())
+        {
+            // Redirection vers le ExceptionSubscriber
+            throw new AccessDeniedHttpException();
+        }
+
+        // Convertis la chaîne en objet User
+        $userUpdate = $entityManager->getRepository(User::class)->find($user->getId());
+
+        // Décode les données JSON
+        $data = json_decode($request->getContent());
+
+        // Si les données sont vident
+        if ($data == null)
+        {
+            // Redirection vers le ExceptionSubscriber
+            throw new BadRequestHttpException();
+        }
+
+        // Pour chaque données en clé -> valeur
+        foreach ($data as $key => $value){
+            // Si il y a une clé et que sa valeur n'est pas vide
+            if ($key && !empty($value)) {
+                // Met la première lettre en Majuscule
+                $name = ucfirst($key);
+                // Fais correspondre la clé au setter correspondant
+                $setter = 'set'.$name;
+                // Modifie la valeur du setter
+                $userUpdate->$setter($value);
+            }
+        }
+
+        // Récupère les éventuelles erreurs
+        $errors = $validator->validate($user);
+        // Si il y a une erreur
+        if(count($errors)) {
+            // Sérialisation de $errors avec un status 500
+            return $this->json($errors, 500);
+        }
+
+        $entityManager->flush();
+
+        $data = [
+            'status' => 200,
+            'message' => 'L\'utilisateur a bien été modifié'
+        ];
+        return $this->json($data, 200);
+    }
+
+    /**
      * @Route("/{id}", name="delete_user", methods={"DELETE"})
      * @IsGranted("ROLE_ADMIN")
      * @param User $user
      * @param EntityManagerInterface $entityManager
-     * @return Response
+     * @return JsonResponse
      */
     public function deleteUser(User $user, EntityManagerInterface $entityManager)
     {
@@ -116,6 +181,7 @@ class UserController extends AbstractController
 
         $entityManager->remove($user);
         $entityManager->flush();
+
         $data = [
             'status' => 200,
             'message' => 'L\'utilisateur a bien été supprimé'
