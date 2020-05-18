@@ -15,49 +15,49 @@ class User
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"listUsersCustomer"})
+     * @Groups({"listUsersCustomer", "showUser"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"listUsersCustomer"})
+     * @Groups({"showUser"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"listUsersCustomer"})
+     * @Groups({"listUsersCustomer", "showUser"})
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"listUsersCustomer"})
+     * @Groups({"showUser"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"listUsersCustomer"})
+     * @Groups({"showUser"})
      */
     private $address;
 
     /**
      * @ORM\Column(type="string", length=20)
-     * @Groups({"listUsersCustomer"})
+     * @Groups({"showUser"})
      */
     private $zipcode;
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Groups({"listUsersCustomer"})
+     * @Groups({"showUser"})
      */
     private $city;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"listUsersCustomer"})
+     * @Groups({"showUser"})
      */
     private $createdAt;
 
