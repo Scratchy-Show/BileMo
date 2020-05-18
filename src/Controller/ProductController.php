@@ -9,10 +9,27 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/api/products")
+ */
 class ProductController extends AbstractController
 {
     /**
-     * @Route("/products{page<\d+>?1}", name="list_products", methods={"GET"})
+     * @Route("/{id}", name="show_product", methods={"GET"}, requirements={"id":"\d+"})
+     * @param Product $product
+     * @param ProductRepository $productRepository
+     * @return JsonResponse
+     */
+    public function showProduct(Product $product, ProductRepository $productRepository)
+    {
+        $product = $productRepository->find($product->getId());
+
+        // Sérialisation de $product avec un status 200
+        return $this->json($product, 200, []);
+    }
+
+    /**
+     * @Route("/{page<\d+>?1}", name="list_products", methods={"GET"})
      * @param Request $request
      * @param ProductRepository $productRepository
      * @return JsonResponse
@@ -32,19 +49,5 @@ class ProductController extends AbstractController
 
         // Sérialisation de $products avec un status 200
         return $this->json($products, 200, []);
-    }
-
-    /**
-     * @Route("/product/{id}", name="show_product", methods={"GET"}, requirements={"id":"\d+"})
-     * @param Product $product
-     * @param ProductRepository $productRepository
-     * @return JsonResponse
-     */
-    public function showProduct(Product $product, ProductRepository $productRepository)
-    {
-        $product = $productRepository->find($product->getId());
-
-        // Sérialisation de $product avec un status 200
-        return $this->json($product, 200, []);
     }
 }

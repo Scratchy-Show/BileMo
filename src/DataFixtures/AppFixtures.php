@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-
 use App\Entity\User;
 use App\Entity\Customer;
 use App\Entity\Product;
@@ -10,13 +9,24 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
     /**
+     * @var UserPasswordEncoderInterface
+     */
+    private $encoder;
+
+    /**
      * @var Generator
      */
     protected $faker;
+
+    public function __construct(UserPasswordEncoderInterface $encoder)
+    {
+        $this->encoder = $encoder;
+    }
 
     public function load(ObjectManager $manager)
     {
@@ -140,11 +150,17 @@ class AppFixtures extends Fixture
         //  === 4 customers ===
         foreach ($customerNameArray as $customerName) {
             $customer = new Customer();
-            $customer->setName($customerName);
-            $customer->setEmail("test" . $customerName . "@exemple.fr");
-            $manager->persist($customer);
+            $customer
+                ->setUsername($customerName)
+                ->setName($customerName)
+                ->setEmail("test" . $customerName . "@exemple.fr")
+                ->setRoles(['ROLE_USER'])
+                ->setPassword($this->encoder->encodePassword($customer, 'password'))
+                ;
 
             $customers[] = $customer;
+
+            $manager->persist($customer);
         }
 
         //  === 60 users ===
