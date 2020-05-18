@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExceptionSubscriber implements EventSubscriberInterface
@@ -28,6 +29,14 @@ class ExceptionSubscriber implements EventSubscriberInterface
             $data = [
                 'status' => '400',
                 'message' => $exception->getMessage()
+            ];
+
+            // Renvoie une réponse au format JSON
+            $event->setResponse(new JsonResponse($data));
+        } elseif ($exception instanceof AccessDeniedHttpException) {
+            $data = [
+                'status' => $exception->getStatusCode(),
+                'message' => 'L\'accès à cette ressource n\'est pas autorisé'
             ];
 
             // Renvoie une réponse au format JSON
