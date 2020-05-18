@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -79,7 +80,7 @@ class UserController extends AbstractController
         // Le client est celui qui est connecté
         $user->setCustomer($this->getUser());
 
-        // Récupère les éventelles erreurs
+        // Récupère les éventuelles erreurs
         $errors = $validator->validate($user);
         // Si il y a une erreur
         if(count($errors)) {
@@ -95,5 +96,30 @@ class UserController extends AbstractController
             'message' => 'L\'utilisateur a bien été ajouté'
         ];
         return $this->json($data, 201);
+    }
+
+    /**
+     * @Route("/{id}", name="delete_user", methods={"DELETE"})
+     * @IsGranted("ROLE_ADMIN")
+     * @param User $user
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    public function deleteUser(User $user, EntityManagerInterface $entityManager)
+    {
+        // Si l'utilisateur n'appartient pas au client connecté
+        if ($user->getCustomer() != $this->getUser())
+        {
+            // Redirection vers le ExceptionSubscriber
+            throw new AccessDeniedHttpException();
+        }
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+        $data = [
+            'status' => 200,
+            'message' => 'L\'utilisateur a bien été supprimé'
+        ];
+        return $this->json($data, 200);
     }
 }
