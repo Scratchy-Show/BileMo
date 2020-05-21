@@ -25,17 +25,26 @@ class ProductRepository extends ServiceEntityRepository
     // Récupère tous les produits avec une pagination
     public function findAllProducts($page, $limit)
     {
+        // Si l'argument $page n'est pas noté dans l'url
+        if (is_null($page)) {
+            // Redirection vers le ExceptionSubscriber - Erreur 500
+            throw new InvalidArgumentException(
+                'Missing \'page\' argument'
+            );
+        }
+
         // Vérifie que $page correspond à un nombre
         if (!is_numeric($page)) {
+            // Redirection vers le ExceptionSubscriber - Erreur 500
             throw new InvalidArgumentException(
-                'La valeur de l\'argument est incorrecte (valeur : ' . $page . ').'
+                'Argument value is incorrect (value : ' . $page . ').'
             );
         }
 
         // Si $page est inférieur à 1
         if ($page < 1) {
             // Redirection vers le ExceptionSubscriber
-            throw new NotFoundHttpException('');
+            throw new NotFoundHttpException();
         }
 
         // Construction de la requête
@@ -68,7 +77,6 @@ class ProductRepository extends ServiceEntityRepository
 
         return $paginator;
     }
-
 
     // /**
     //  * @return Product[] Returns an array of Product objects
