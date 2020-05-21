@@ -28,7 +28,7 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"showUser"})
+     * @Groups({"listUsersCustomer", "showUser"})
      * @Assert\NotBlank(message = "Un prénom doit être indiqué")
      * @Assert\Length(
      *      min = 2,
@@ -54,7 +54,7 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"showUser"})
+     * @Groups({"listUsersCustomer", "showUser"})
      * @Assert\NotBlank(message = "Un email doit être indiqué")
      * @Assert\Email(message = "Le format de l'email attendu est nom@exemple.fr")
      */

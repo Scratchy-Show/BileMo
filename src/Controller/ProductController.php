@@ -15,13 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     /**
-     * @Route("/{id}", name="show_product", methods={"GET"}, requirements={"id":"\d+"})
+     * @Route("/{id}", name="show_product", methods={"GET"})
      * @param Product $product
      * @param ProductRepository $productRepository
      * @return JsonResponse
      */
     public function showProduct(Product $product, ProductRepository $productRepository)
     {
+        // Récupère le produit
         $product = $productRepository->find($product->getId());
 
         // Sérialisation de $product avec un status 200
@@ -29,7 +30,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{page<\d+>?1}", name="list_products", methods={"GET"})
+     * @Route("/{page}", name="list_products", methods={"GET"})
      * @param Request $request
      * @param ProductRepository $productRepository
      * @return JsonResponse
@@ -38,11 +39,6 @@ class ProductController extends AbstractController
     {
         // Récupère le numéro de page
         $page = $request->query->get('page');
-
-        // Si aucune page d'indiqué - Page 1 par défaut
-        if (is_null($page)) {
-            $page = 1;
-        }
 
         // Récupère tous les produits de la table product avec une pagination
         $products = $productRepository->findAllProducts($page, $_ENV['LIMIT_PRODUCTS']);

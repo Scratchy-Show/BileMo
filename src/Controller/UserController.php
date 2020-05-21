@@ -10,18 +10,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * @Route("/api/users")
+ * @Route("/api/")
  */
 class UserController extends AbstractController
 {
     /**
-     * @Route("/{id}", name="show_user", methods={"GET"}, requirements={"id":"\d+"})
+     * @Route("users/{id}", name="show_user", methods={"GET"})
      * @IsGranted("ROLE_ADMIN")
      * @param User $user
      * @param UserRepository $userRepository
@@ -44,7 +43,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/", name="list_users", methods={"GET"})
+     * @Route("users", name="list_users", methods={"GET"})
      * @IsGranted("ROLE_ADMIN")
      * @param UserRepository $userRepository
      * @return JsonResponse
@@ -59,7 +58,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/create", name="create_user", methods={"POST"})
+     * @Route("users/create", name="create_user", methods={"POST"})
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -99,7 +98,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="update_user", methods={"PUT"})
+     * @Route("users/{id}", name="update_user", methods={"PUT"})
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      * @param User $user
@@ -126,13 +125,6 @@ class UserController extends AbstractController
         // Décode les données JSON
         $data = json_decode($request->getContent());
 
-        // Si les données sont vident
-        if ($data == null)
-        {
-            // Redirection vers le ExceptionSubscriber
-            throw new BadRequestHttpException();
-        }
-
         // Pour chaque données en clé -> valeur
         foreach ($data as $key => $value){
             // Si il y a une clé et que sa valeur n'est pas vide
@@ -158,13 +150,13 @@ class UserController extends AbstractController
 
         $data = [
             'status' => 200,
-            'message' => 'L\'utilisateur a bien été modifié'
+            'message' => 'User has been successfully edited'
         ];
         return $this->json($data, 200);
     }
 
     /**
-     * @Route("/{id}", name="delete_user", methods={"DELETE"})
+     * @Route("users/{id}", name="delete_user", methods={"DELETE"})
      * @IsGranted("ROLE_ADMIN")
      * @param User $user
      * @param EntityManagerInterface $entityManager
@@ -184,7 +176,7 @@ class UserController extends AbstractController
 
         $data = [
             'status' => 200,
-            'message' => 'L\'utilisateur a bien été supprimé'
+            'message' => 'User has been successfully deleted'
         ];
         return $this->json($data, 200);
     }

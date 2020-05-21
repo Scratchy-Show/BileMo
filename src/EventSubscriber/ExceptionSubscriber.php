@@ -2,7 +2,6 @@
 
 namespace App\EventSubscriber;
 
-use InvalidArgumentException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -10,7 +9,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -22,15 +20,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         if ($exception instanceof NotFoundHttpException) {
             $data = [
                 'status' => $exception->getStatusCode(),
-                'message' => 'La ressource n\'existe pas'
-            ];
-
-            // Renvoie une réponse au format JSON
-            $event->setResponse(new JsonResponse($data));
-        } elseif ($exception instanceof InvalidArgumentException) {
-            $data = [
-                'status' => '400',
-                'message' => $exception->getMessage()
+                'message' => 'Page not found'
             ];
 
             // Renvoie une réponse au format JSON
@@ -38,7 +28,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         } elseif ($exception instanceof AccessDeniedHttpException) {
             $data = [
                 'status' => $exception->getStatusCode(),
-                'message' => 'L\'accès à cette ressource n\'est pas autorisé'
+                'message' => 'Access to this resource is not allowed'
             ];
 
             // Renvoie une réponse au format JSON
@@ -46,15 +36,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         } elseif ($exception instanceof MethodNotAllowedHttpException) {
             $data = [
                 'status' => $exception->getStatusCode(),
-                'message' => 'La méthode HTTP utilisée n\'est pas traitable par l\'API'
-            ];
-
-            // Renvoie une réponse au format JSON
-            $event->setResponse(new JsonResponse($data));
-        } elseif ($exception instanceof NotEncodableValueException) {
-            $data = [
-                'status' => 500,
-                'message' => 'Erreur de syntaxe'
+                'message' => 'Method Not Allowed'
             ];
 
             // Renvoie une réponse au format JSON
@@ -62,7 +44,15 @@ class ExceptionSubscriber implements EventSubscriberInterface
         } elseif ($exception instanceof BadRequestHttpException) {
             $data = [
                 'status' => $exception->getStatusCode(),
-                'message' => 'La demande n\'a pas pu être traitée correctement'
+                'message' => $exception->getMessage()
+            ];
+
+            // Renvoie une réponse au format JSON
+            $event->setResponse(new JsonResponse($data));
+        } else {
+            $data = [
+                'status' => 500,
+                'message' => $exception->getMessage()
             ];
 
             // Renvoie une réponse au format JSON
