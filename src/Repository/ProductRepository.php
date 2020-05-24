@@ -4,10 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
-use InvalidArgumentException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,62 +17,6 @@ class ProductRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Product::class);
-    }
-
-    // Récupère tous les produits avec une pagination
-    public function findAllProducts($page, $limit)
-    {
-        // Si l'argument $page n'est pas noté dans l'url
-        if (is_null($page)) {
-            // Redirection vers le ExceptionSubscriber - Erreur 500
-            throw new InvalidArgumentException(
-                'Missing \'page\' argument'
-            );
-        }
-
-        // Vérifie que $page correspond à un nombre
-        if (!is_numeric($page)) {
-            // Redirection vers le ExceptionSubscriber - Erreur 500
-            throw new InvalidArgumentException(
-                'Argument value is incorrect (value : ' . $page . ').'
-            );
-        }
-
-        // Si $page est inférieur à 1
-        if ($page < 1) {
-            // Redirection vers le ExceptionSubscriber
-            throw new NotFoundHttpException();
-        }
-
-        // Construction de la requête
-        $qb = $this->createQueryBuilder('p')
-            // Sélectionne la table product
-            ->select('p')
-            // Définit l'ordre d'affichage par ordre alphabétique
-            ->orderBy('p.brand', 'ASC');
-
-        // Requête
-        $query = $qb->getQuery();
-
-        // Calcul les produits a afficher
-        $firstResult = ($page - 1) * $limit;
-
-        // Retourne le premier résultat avec setFirstResult()
-        $query->setFirstResult($firstResult);
-
-        // Retourne le maximum de résultat avec setMaxResults()
-        $query->setMaxResults($limit);
-
-        // Instancie un objet Paginator qui va contenir uniquement les commentaires souhaités
-        $paginator = new Paginator($query);
-
-        // Si la page demandée est supérieur au compte
-        if (($paginator->count() <= $firstResult) && $page != 1) {
-            // Redirection vers le ExceptionSubscriber
-            throw new NotFoundHttpException();
-        }
-
-        return $paginator;
     }
 
     // /**

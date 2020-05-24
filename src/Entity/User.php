@@ -3,17 +3,41 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(
  *  fields = {"email"},
  *  message = "Cet email est déjà utilisé"
+ * )
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "show_user",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true
+ *      )
+ * )
+ * @Hateoas\Relation(
+ *      "delete",
+ *      href = @Hateoas\Route(
+ *          "delete_user",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true
+ *      )
+ * )
+ * @Hateoas\Relation(
+ *      "list",
+ *      href = @Hateoas\Route(
+ *          "list_users",
+ *          absolute = true
+ *      )
  * )
  */
 class User
@@ -22,14 +46,13 @@ class User
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"listUsersCustomer", "showUser"})
+     * @Groups({"list", "showUser"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"listUsersCustomer", "showUser"})
-     * @Assert\NotBlank(message = "Un prénom doit être indiqué")
+     * @Groups({"list", "showUser"})
      * @Assert\Length(
      *      min = 2,
      *      max = 30,
@@ -41,7 +64,7 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"listUsersCustomer", "showUser"})
+     * @Groups({"list", "showUser"})
      * @Assert\NotBlank(message = "Un nom doit être indiqué")
      * @Assert\Length(
      *      min = 2,
@@ -54,7 +77,7 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"listUsersCustomer", "showUser"})
+     * @Groups({"list", "showUser"})
      * @Assert\NotBlank(message = "Un email doit être indiqué")
      * @Assert\Email(message = "Le format de l'email attendu est nom@exemple.fr")
      */
@@ -95,14 +118,9 @@ class User
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="customers")
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Exclude
      */
     private $customer;
-
-    public function __construct()
-    {
-        // Par défaut, la date d'inscription est celle d'aujourd'hui
-        $this->setCreatedAt(new DateTime("now"));
-    }
 
     public function getId(): ?int
     {
