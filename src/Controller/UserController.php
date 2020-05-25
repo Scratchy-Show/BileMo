@@ -44,8 +44,7 @@ class UserController extends AbstractController
         $user = $userRepository->find($user->getId());
 
         // Si l'utilisateur n'appartient pas au client connecté
-        if ($user->getCustomer() != $this->getUser())
-        {
+        if ($user->getCustomer() != $this->getUser()) {
             // Redirection vers le ExceptionSubscriber
             throw new AccessDeniedHttpException();
         }
@@ -59,12 +58,11 @@ class UserController extends AbstractController
     /**
      * @Route("users", name="users_list", methods={"GET"})
      * @IsGranted("ROLE_ADMIN")
-     * @param SerializerInterface $serializer
      * @param Request $request
      * @param Paging $paging
      * @return JsonResponse
      */
-    public function listUsersOfCustomer(SerializerInterface $serializer, Request $request, Paging $paging)
+    public function listUsersOfCustomer(Request $request, Paging $paging)
     {
         $limit = $request->query->get('limit', 5);
         $page = $request->query->get('page', 1);
@@ -82,15 +80,16 @@ class UserController extends AbstractController
 
         $paginated = $paging->getData();
 
-        if ($paginated->getPage() > $paginated->getPages() || $paginated->getPage() < 1)
-        {
+        if ($paginated->getPage() > $paginated->getPages() || $paginated->getPage() < 1) {
             // Redirection vers le ExceptionSubscriber
             throw new NotFoundHttpException();
         }
 
-        $data = $this->serializer->serialize($paginated, 'json', SerializationContext::create()
-            ->setGroups(array('Default', 'list')
-            ));
+        $data = $this->serializer->serialize(
+            $paginated,
+            'json',
+            SerializationContext::create()->setGroups(array('Default', 'list'))
+        );
 
         return new JsonResponse($data, 200, [], true);
     }
@@ -110,8 +109,7 @@ class UserController extends AbstractController
         SerializerInterface $serializer,
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator
-    )
-    {
+    ) {
         // Convertis la chaîne en objet User
         $user = $serializer->deserialize($request->getContent(), User::class, 'json');
 
@@ -123,7 +121,7 @@ class UserController extends AbstractController
         // Récupère les éventuelles erreurs
         $errors = $validator->validate($user);
         // Si il y a une erreur
-        if(count($errors)) {
+        if (count($errors)) {
             // Sérialisation de $errors avec un status 500
             return $this->json($errors, 500);
         }
@@ -148,8 +146,7 @@ class UserController extends AbstractController
     public function deleteUser(User $user, EntityManagerInterface $entityManager)
     {
         // Si l'utilisateur n'appartient pas au client connecté
-        if ($user->getCustomer() != $this->getUser())
-        {
+        if ($user->getCustomer() != $this->getUser()) {
             // Redirection vers le ExceptionSubscriber
             throw new AccessDeniedHttpException();
         }

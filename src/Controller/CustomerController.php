@@ -15,6 +15,5 @@ class CustomerController extends AbstractController
      */
     public function index()
     {
-
     }
 }
