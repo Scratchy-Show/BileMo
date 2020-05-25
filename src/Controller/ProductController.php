@@ -44,12 +44,11 @@ class ProductController extends AbstractController
 
     /**
      * @Route("products", name="products_list", methods={"GET"})
-     * @param SerializerInterface $serializer
      * @param Request $request
      * @param Paging $paging
      * @return JsonResponse
      */
-    public function listProducts(SerializerInterface $serializer, Request $request, Paging $paging)
+    public function listProducts(Request $request, Paging $paging)
     {
         $limit = $request->query->get('limit', 3);
         $page = $request->query->get('page', 1);
@@ -69,15 +68,16 @@ class ProductController extends AbstractController
 
         $paginated = $paging->getData();
 
-        if ($paginated->getPage() > $paginated->getPages() || $paginated->getPage() < 1)
-        {
+        if ($paginated->getPage() > $paginated->getPages() || $paginated->getPage() < 1) {
             // Redirection vers le ExceptionSubscriber
             throw new NotFoundHttpException();
         }
 
-        $data = $this->serializer->serialize($paginated, 'json', SerializationContext::create()
-            ->setGroups(array('Default', 'list')
-            ));
+        $data = $this->serializer->serialize(
+            $paginated,
+            'json',
+            SerializationContext::create()->setGroups(array('Default', 'list'))
+        );
 
         return new JsonResponse($data, 200, [], true);
     }

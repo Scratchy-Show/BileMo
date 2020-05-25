@@ -149,7 +149,6 @@ class Customer implements UserInterface
      */
     public function getSalt()
     {
-
     }
 
     /**
@@ -157,7 +156,6 @@ class Customer implements UserInterface
      */
     public function eraseCredentials()
     {
-
     }
 
     /**
