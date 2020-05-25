@@ -4,9 +4,26 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "product_details",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true
+ *      )
+ * )
+ * @Hateoas\Relation(
+ *      "list",
+ *      href = @Hateoas\Route(
+ *          "products_list",
+ *          absolute = true
+ *      )
+ * )
  */
 class Product
 {
@@ -14,36 +31,43 @@ class Product
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"list", "detail"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Groups({"list", "detail"})
      */
     private $brand;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Groups({"list", "detail"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Groups({"detail"})
      */
     private $memory;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Groups({"detail"})
      */
     private $color;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"detail"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"detail"})
      */
     private $description;
 
