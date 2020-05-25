@@ -32,7 +32,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("users/{id}", name="show_user", methods={"GET"})
+     * @Route("users/{id}", name="user_detail", methods={"GET"})
      * @IsGranted("ROLE_ADMIN")
      * @param User $user
      * @param UserRepository $userRepository
@@ -57,7 +57,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("users", name="list_users", methods={"GET"})
+     * @Route("users", name="users_list", methods={"GET"})
      * @IsGranted("ROLE_ADMIN")
      * @param SerializerInterface $serializer
      * @param Request $request
@@ -88,7 +88,7 @@ class UserController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $data = $serializer->serialize($paginated, 'json', SerializationContext::create()
+        $data = $this->serializer->serialize($paginated, 'json', SerializationContext::create()
             ->setGroups(array('Default', 'list')
             ));
 
@@ -96,7 +96,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("users/create", name="create_user", methods={"POST"})
+     * @Route("users/create", name="user_create", methods={"POST"})
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -133,13 +133,13 @@ class UserController extends AbstractController
 
         $data = [
             'status' => 201,
-            'message' => 'L\'utilisateur a bien été ajouté'
+            'message' => 'User successfully added'
         ];
         return $this->json($data, 201);
     }
 
     /**
-     * @Route("users/{id}", name="delete_user", methods={"DELETE"})
+     * @Route("users/{id}", name="user_delete", methods={"DELETE"})
      * @IsGranted("ROLE_ADMIN")
      * @param User $user
      * @param EntityManagerInterface $entityManager
@@ -157,10 +157,6 @@ class UserController extends AbstractController
         $entityManager->remove($user);
         $entityManager->flush();
 
-        $data = [
-            'status' => 204,
-        ];
-
-        return $this->json($data, 204);
+        return $this->json(null, 204);
     }
 }

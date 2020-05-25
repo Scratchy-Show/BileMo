@@ -14,11 +14,11 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
  * @UniqueEntity(
  *     fields={"username"},
- *     message="Cet utilisateur existe déjà"
+ *     message="This user already exists"
  * )
  * @UniqueEntity(
  *     fields={"email"},
- *     message="Cet email existe déjà"
+ *     message="This email already exists"
  * )
  */
 class Customer implements UserInterface

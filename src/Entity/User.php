@@ -14,12 +14,12 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(
  *  fields = {"email"},
- *  message = "Cet email est déjà utilisé"
+ *  message = "This email is already in use"
  * )
  * @Hateoas\Relation(
  *      "self",
  *      href = @Hateoas\Route(
- *          "show_user",
+ *          "user_detail",
  *          parameters = { "id" = "expr(object.getId())" },
  *          absolute = true
  *      )
@@ -27,7 +27,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @Hateoas\Relation(
  *      "delete",
  *      href = @Hateoas\Route(
- *          "delete_user",
+ *          "user_delete",
  *          parameters = { "id" = "expr(object.getId())" },
  *          absolute = true
  *      )
@@ -35,7 +35,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @Hateoas\Relation(
  *      "list",
  *      href = @Hateoas\Route(
- *          "list_users",
+ *          "users_list",
  *          absolute = true
  *      )
  * )
@@ -46,71 +46,72 @@ class User
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"list", "showUser"})
+     * @Groups({"list", "detail"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"list", "showUser"})
+     * @Groups({"list", "detail"})
+     * @Assert\NotBlank(message = "A first name must be indicated")
      * @Assert\Length(
      *      min = 2,
      *      max = 30,
-     *      minMessage = "Votre prénom doit contenir au moins {{ limit }} caractères",
-     *      maxMessage = "Votre prénom ne peut doit pas dépasser les {{ limit }} caractères"
+     *      minMessage = "Your first name must contain at least {{limit}} characters",
+     *      maxMessage = "Your first name cannot exceed {{limit}} characters"
      * )
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"list", "showUser"})
-     * @Assert\NotBlank(message = "Un nom doit être indiqué")
+     * @Groups({"list", "detail"})
+     * @Assert\NotBlank(message = "A name must be indicated")
      * @Assert\Length(
      *      min = 2,
      *      max = 30,
-     *      minMessage = "Votre nom doit contenir au moins {{ limit }} caractères",
-     *      maxMessage = "Votre nom ne peut doit pas dépasser les {{ limit }} caractères"
+     *      minMessage = "Your name must contain at least {{limit}} characters",
+     *      maxMessage = "Your name cannot be longer than {{limit}} characters"
      * )
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"list", "showUser"})
-     * @Assert\NotBlank(message = "Un email doit être indiqué")
-     * @Assert\Email(message = "Le format de l'email attendu est nom@exemple.fr")
+     * @Groups({"list", "detail"})
+     * @Assert\NotBlank(message = "An email must be indicated")
+     * @Assert\Email(message = "The format of the expected email is name@example.com")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"showUser"})
-     * @Assert\NotBlank(message = "Une adresse doit être indiqué")
+     * @Groups({"detail"})
+     * @Assert\NotBlank(message = "An address must be indicated")
      */
     private $address;
 
     /**
      * @ORM\Column(type="string", length=20)
-     * @Groups({"showUser"})
-     * @Assert\NotBlank(message = "Un code postale doit être indiqué")
+     * @Groups({"detail"})
+     * @Assert\NotBlank(message = "A zipcode must be indicated")
      * @Assert\Regex(
      *     pattern = "/^\d{5}-\d{4}|\d{5}|[A-Z]\d[A-Z] \d[A-Z]\d$/",
-     *     message = "Le code postale n'est pas valide"
+     *     message = "The zipcode is not valid"
      * )
      */
     private $zipcode;
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Groups({"showUser"})
-     * @Assert\NotBlank(message = "Une ville doit être indiqué")
+     * @Groups({"detail"})
+     * @Assert\NotBlank(message = "A city must be indicated")
      */
     private $city;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"showUser"})
+     * @Groups({"detail"})
      * @Assert\Type("DateTime")
      */
     private $createdAt;

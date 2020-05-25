@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use App\Service\Paging;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,12 +14,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/api/products")
+ * @Route("/api/")
  */
 class ProductController extends AbstractController
 {
+    private $serializer;
+
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
     /**
-     * @Route("/{id}", name="show_product", methods={"GET"})
+     * @Route("products/{id}", name="product_details", methods={"GET"})
      * @param Product $product
      * @param ProductRepository $productRepository
      * @return JsonResponse
@@ -28,12 +36,14 @@ class ProductController extends AbstractController
         // Récupère le produit
         $product = $productRepository->find($product->getId());
 
-        // Sérialisation de $product avec un status 200
-        return $this->json($product, 200, []);
+        // Sérialisation de $product
+        $json = $this->serializer->serialize($product, 'json');
+
+        return new JsonResponse($json, 200, [], true);
     }
 
     /**
-     * @Route("/", name="list_products", methods={"GET"})
+     * @Route("products", name="products_list", methods={"GET"})
      * @param SerializerInterface $serializer
      * @param Request $request
      * @param Paging $paging
@@ -41,7 +51,6 @@ class ProductController extends AbstractController
      */
     public function listProducts(SerializerInterface $serializer, Request $request, Paging $paging)
     {
-
         $limit = $request->query->get('limit', 3);
         $page = $request->query->get('page', 1);
         $route = $request->attributes->get('_route');
@@ -66,7 +75,9 @@ class ProductController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $data = $serializer->serialize($paginated, 'json');
+        $data = $this->serializer->serialize($paginated, 'json', SerializationContext::create()
+            ->setGroups(array('Default', 'list')
+            ));
 
         return new JsonResponse($data, 200, [], true);
     }
