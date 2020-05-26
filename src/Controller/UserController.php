@@ -10,6 +10,9 @@ use Exception;
 use App\Service\Paging;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,6 +36,35 @@ class UserController extends AbstractController
 
     /**
      * @Route("users/{id}", name="user_detail", methods={"GET"})
+     * @SWG\Parameter(
+     *   name="id",
+     *   description="Id of the user",
+     *   in="path",
+     *   required=true,
+     *   type="integer"
+     * )
+     * @SWG\Response(
+     *     response=200,
+     *     description="OK",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Forbidden"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found"
+     * )
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
      * @IsGranted("ROLE_ADMIN")
      * @param User $user
      * @param UserRepository $userRepository
@@ -57,6 +89,40 @@ class UserController extends AbstractController
 
     /**
      * @Route("users", name="users_list", methods={"GET"})
+     * @SWG\Parameter(
+     *   name="page",
+     *   description="The page number to show",
+     *   in="query",
+     *   type="integer"
+     * )
+     * @SWG\Parameter(
+     *   name="limit",
+     *   description="The number of users per page",
+     *   in="query",
+     *   type="integer"
+     * )
+     * @SWG\Response(
+     *     response=200,
+     *     description="OK",
+     *      @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Forbidden"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found"
+     * )
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      * @param Paging $paging
@@ -96,6 +162,45 @@ class UserController extends AbstractController
 
     /**
      * @Route("users/create", name="user_create", methods={"POST"})
+     * @SWG\Parameter(
+     *   name="User",
+     *   description="Fields to provide to create an user",
+     *   in="body",
+     *   required=true,
+     *   type="string",
+     *   @SWG\Schema(
+     *     type="object",
+     *     title="User field",
+     *     @SWG\Property(property="first_name", type="string"),
+     *     @SWG\Property(property="last_name", type="string"),
+     *     @SWG\Property(property="email", type="string"),
+     *     @SWG\Property(property="address", type="string"),
+     *     @SWG\Property(property="zipcode", type="string"),
+     *     @SWG\Property(property="city", type="string")
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=201,
+     *     description="Created",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Forbidden"
+     * )
+     * @SWG\Response(
+     *     response=500,
+     *     description="Internal Server Error"
+     * )
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -138,6 +243,31 @@ class UserController extends AbstractController
 
     /**
      * @Route("users/{id}", name="user_delete", methods={"DELETE"})
+     * @SWG\Parameter(
+     *   name="id",
+     *   description="Id of the user to delete",
+     *   in="path",
+     *   required=true,
+     *   type="integer"
+     * )
+     * @SWG\Response(
+     *     response=204,
+     *     description="No Content"
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Forbidden"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found"
+     * )
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
      * @IsGranted("ROLE_ADMIN")
      * @param User $user
      * @param EntityManagerInterface $entityManager
