@@ -7,6 +7,8 @@ use App\Repository\ProductRepository;
 use App\Service\Paging;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +29,26 @@ class ProductController extends AbstractController
 
     /**
      * @Route("products/{id}", name="product_details", methods={"GET"})
+     * @SWG\Parameter(
+     *   name="id",
+     *   description="Id of the product",
+     *   in="path",
+     *   required=true,
+     *   type="integer"
+     * )
+     * @SWG\Response(
+     *     response=200,
+     *     description="OK",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Product::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found"
+     * )
+     * @SWG\Tag(name="Products")
      * @param Product $product
      * @param ProductRepository $productRepository
      * @return JsonResponse
@@ -44,6 +66,31 @@ class ProductController extends AbstractController
 
     /**
      * @Route("products", name="products_list", methods={"GET"})
+     * @SWG\Parameter(
+     *   name="page",
+     *   description="The page number to show",
+     *   in="query",
+     *   type="integer"
+     * )
+     * @SWG\Parameter(
+     *   name="limit",
+     *   description="The number of products per page",
+     *   in="query",
+     *   type="integer"
+     * )
+     * @SWG\Response(
+     *     response=200,
+     *     description="OK",
+     *      @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Product::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found"
+     * )
+     * @SWG\Tag(name="Products")
      * @param Request $request
      * @param Paging $paging
      * @return JsonResponse

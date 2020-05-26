@@ -90,6 +90,9 @@
     "doctrine/reflection": {
         "version": "1.2.1"
     },
+    "exsyst/swagger": {
+        "version": "v0.4.1"
+    },
     "fzaninotto/faker": {
         "version": "v1.9.1"
     },
@@ -182,6 +185,19 @@
     "namshi/jose": {
         "version": "7.2.3"
     },
+    "nelmio/api-doc-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "c8e0c38e1a280ab9e37587a8fa32b251d5bc1c94"
+        },
+        "files": [
+            "./config/packages/nelmio_api_doc.yaml",
+            "./config/routes/nelmio_api_doc.yaml"
+        ]
+    },
     "nikic/php-parser": {
         "version": "v4.4.0"
     },
@@ -238,6 +254,9 @@
         "files": [
             "./phpcs.xml.dist"
         ]
+    },
+    "symfony/asset": {
+        "version": "v5.0.8"
     },
     "symfony/cache": {
         "version": "v5.0.8"
@@ -339,6 +358,9 @@
         }
     },
     "symfony/mime": {
+        "version": "v5.0.8"
+    },
+    "symfony/options-resolver": {
         "version": "v5.0.8"
     },
     "symfony/orm-pack": {
@@ -494,5 +516,8 @@
     },
     "willdurand/hateoas-bundle": {
         "version": "2.1.0"
+    },
+    "zircote/swagger-php": {
+        "version": "2.0.16"
     }
 }

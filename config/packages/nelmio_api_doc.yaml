@@ -1,0 +1,24 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Bilemo API
+            description: Bilemo API docs
+            version: 1.0.0
+        securityDefinitions:
+            Bearer:
+                type: apiKey
+                description: 'Value: Bearer {jwt} | (Login to get a token)'
+                name: Authorization
+                in: header
+        security:
+            - Bearer: []
+        tags:
+            - name: Products
+              description: Get list and details of products from Bilemo
+            - name: Users
+              description: Get list and details of users from customers
+            - name: Login
+              description: Login to get a token
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
