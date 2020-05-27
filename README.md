@@ -29,7 +29,7 @@ Creating of an API Rest for BileMo, a fictitious phone sales company.
 git clone https://github.com/Scratchy-Show/BileMo.git
 ```
 
- 3. Configure the `DATABASE_URL` environment variable to connect to your database.
+ 3. Configure the `DATABASE_URL` environment variable to connect to your database in `.env` file.
  4. **Install the dependencies** - In the root directory of the project, open the CLI (Command-Line Interface) and execute the command :
 ```
 composer install
