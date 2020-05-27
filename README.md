@@ -15,9 +15,9 @@ Creating of an API Rest for BileMo, a fictitious phone sales company.
 * Composer 1.9.1
 
 * Wampserver 3.2.0
-  * PHP 7.4.1
-  * Apache 2.4.41
-  * MySQL 8.0.18
+  *   PHP 7.4.1
+  *   Apache 2.4.41
+  *   MySQL 8.0.18
     
 ------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
 symfony server:start
 ```
 
-10.  **Access the documentation** - Enter the address  in your browser :
+10. **Access the documentation** - Enter the address  in your browser :
 ```
 <http://localhost:8000/api/doc>
 ```
