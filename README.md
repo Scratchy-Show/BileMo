@@ -50,12 +50,16 @@ php bin/console doctrine:schema:update --force
 php bin/console doctrine:fixtures:load
 ```
 
- 8. **Run the Symfony server** - Execute the command :
+ 8. **Generate SSH keys** - Execute the commands :
+```
+mkdir config/jwt
+openssl genrsa -out config/jwt/private.pem 4096
+openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
+```
+
+ 9. **Run the Symfony server** - Execute the command :
 ```
 symfony server:start
 ```
 
- 9. **Access the site** - Enter the address indicated by the web server in your browser :
-```
-Example: <http://127.0.0.1:8000>
-```
+
