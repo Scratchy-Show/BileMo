@@ -15,9 +15,9 @@ Creating of an API Rest for BileMo, a fictitious phone sales company.
 *   Composer 1.9.1
 
 *   Wampserver 3.2.0
-  *   PHP 7.4.1
-  *   Apache 2.4.41
-  *   MySQL 8.0.18
+  *     PHP 7.4.1
+  *     Apache 2.4.41
+  *     MySQL 8.0.18
     
 ------------------------------------------------------------------------------------------------------------------------------------------
 
