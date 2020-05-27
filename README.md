@@ -62,4 +62,8 @@ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
 symfony server:start
 ```
 
+ 10. **Access the documentation** - Enter the address  in your browser :
+```
+<http://localhost:8000/api/doc>
+```
 
