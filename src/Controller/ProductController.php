@@ -87,6 +87,10 @@ class ProductController extends AbstractController
      *     )
      * )
      * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request"
+     * )
+     * @SWG\Response(
      *     response=404,
      *     description="Not Found"
      * )

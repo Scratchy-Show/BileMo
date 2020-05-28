@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -110,6 +111,10 @@ class UserController extends AbstractController
      *     )
      * )
      * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request"
+     * )
+     * @SWG\Response(
      *     response=401,
      *     description="Unauthorized"
      * )
@@ -188,16 +193,16 @@ class UserController extends AbstractController
      *     )
      * )
      * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request"
+     * )
+     * @SWG\Response(
      *     response=401,
      *     description="Unauthorized"
      * )
      * @SWG\Response(
      *     response=403,
      *     description="Forbidden"
-     * )
-     * @SWG\Response(
-     *     response=500,
-     *     description="Internal Server Error"
      * )
      * @SWG\Tag(name="Users")
      * @Security(name="Bearer")
@@ -215,6 +220,14 @@ class UserController extends AbstractController
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator
     ) {
+        // Si il n'y a aucune donnée
+        if ($request->getContent() == null) {
+            // Redirection vers le ExceptionSubscriber
+            throw new BadRequestHttpException(
+                'The data are missing'
+            );
+        }
+
         // Convertis la chaîne en objet User
         $user = $serializer->deserialize($request->getContent(), User::class, 'json');
 
@@ -227,8 +240,8 @@ class UserController extends AbstractController
         $errors = $validator->validate($user);
         // Si il y a une erreur
         if (count($errors)) {
-            // Sérialisation de $errors avec un status 500
-            return $this->json($errors, 500);
+            // Sérialisation de $errors avec un status 400
+            return $this->json($errors, 400);
         }
 
         $entityManager->persist($user);
