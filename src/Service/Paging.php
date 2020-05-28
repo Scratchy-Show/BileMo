@@ -6,6 +6,7 @@ namespace App\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\PaginatedRepresentation;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class Paging
 {
@@ -109,6 +110,38 @@ class Paging
      */
     public function getData(): PaginatedRepresentation
     {
+        // Si la valeur de la page ou de la limit est non numérique
+        if (!is_numeric($this->currentPage) || !is_numeric($this->limit)) {
+            // Redirection vers le ExceptionSubscriber
+            throw new BadRequestHttpException(
+                'A non-numeric value encountered'
+            );
+        }
+
+        // Si la valeur de la page ou de la limit est négative
+        if (($this->currentPage < 0) || ($this->limit < 0)) {
+            // Redirection vers le ExceptionSubscriber
+            throw new BadRequestHttpException(
+                'A negative value encountered'
+            );
+        }
+
+        // Si la valeur de la page ou de la limit est négative
+        if ($this->currentPage == 0) {
+            // Redirection vers le ExceptionSubscriber
+            throw new BadRequestHttpException(
+                'A page cannot be zero'
+            );
+        }
+
+        // Si la valeur de la page ou de la limit est négative
+        if ($this->limit == 0) {
+            // Redirection vers le ExceptionSubscriber
+            throw new BadRequestHttpException(
+                'Warning: Division by zero'
+            );
+        }
+
         // Offset
         $offset = $this->currentPage * $this->limit - $this->limit;
 
