@@ -9,7 +9,9 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -45,10 +47,20 @@ class ProductController extends AbstractController
      *     )
      * )
      * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Forbidden"
+     * )
+     * @SWG\Response(
      *     response=404,
      *     description="Not Found"
      * )
      * @SWG\Tag(name="Products")
+     * @Security(name="Bearer")
+     * @IsGranted("ROLE_ADMIN")
      * @param Product $product
      * @param ProductRepository $productRepository
      * @return JsonResponse
@@ -87,6 +99,14 @@ class ProductController extends AbstractController
      *     )
      * )
      * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Forbidden"
+     * )
+     * @SWG\Response(
      *     response=400,
      *     description="Bad Request"
      * )
@@ -95,6 +115,8 @@ class ProductController extends AbstractController
      *     description="Not Found"
      * )
      * @SWG\Tag(name="Products")
+     * @Security(name="Bearer")
+     * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      * @param Paging $paging
      * @return JsonResponse
