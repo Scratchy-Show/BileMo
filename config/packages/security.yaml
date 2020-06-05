@@ -21,8 +21,12 @@ security:
                 check_path:               /api/login_check
                 success_handler:          lexik_jwt_authentication.handler.authentication_success
                 failure_handler:          lexik_jwt_authentication.handler.authentication_failure
-        api_users:
-            pattern:   ^/api/users
+        doc:
+            pattern:  ^/api/doc
+            stateless: true
+            anonymous: true
+        api:
+            pattern:   ^/api
             stateless: true
             anonymous: false
             provider: app_user_provider
@@ -42,6 +46,7 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/doc,   roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 
     role_hierarchy:
