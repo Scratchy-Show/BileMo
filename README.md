@@ -10,7 +10,7 @@ Creating of an API Rest for BileMo, a fictitious phone sales company.
 ------------------------------------------------------------------------------------------------------------------------------------------
 ## Environment used for development
 
-* Symfony 4.14.3
+* Symfony 5.0.8
 
 * Composer 1.9.1
 
