@@ -1,6 +1,6 @@
 # BileMo
 
-Creating of an API Rest for BileMo, a fictitious phone sales company.
+Creating of an API Rest for BileMo, a fictitious phone sales company
 
 ------------------------------------------------------------------------------------------------------------------------------------------
 
